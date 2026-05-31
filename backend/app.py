@@ -7,8 +7,11 @@ from database import get_db, init_db
 
 app = Flask(__name__, static_folder=None)
 
-# Project root
-PROJECT_ROOT = os.getcwd()
+# Project root — try multiple approaches
+_PROJECT_ROOT = os.getcwd()
+if not os.path.isfile(os.path.join(_PROJECT_ROOT, 'index.html')):
+    _PROJECT_ROOT = os.path.dirname(os.path.dirname(__file__))
+PROJECT_ROOT = _PROJECT_ROOT
 
 UPLOAD_FOLDER = os.path.join(PROJECT_ROOT, 'assets', 'uploads')
 os.makedirs(UPLOAD_FOLDER, exist_ok=True)

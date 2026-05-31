@@ -1,1 +1,1 @@
-web: gunicorn backend.app:app
+web: gunicorn backend.app:app --bind 0.0.0.0:$PORT --timeout 30 --log-level debug
