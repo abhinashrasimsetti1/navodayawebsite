@@ -3,7 +3,10 @@ from datetime import datetime
 from flask import Flask, request, jsonify, send_from_directory
 from werkzeug.security import generate_password_hash, check_password_hash
 from werkzeug.utils import secure_filename
-from database import get_db, init_db
+try:
+    from backend.database import get_db, init_db
+except ImportError:
+    from database import get_db, init_db
 
 app = Flask(__name__, static_folder=None)
 
