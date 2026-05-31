@@ -1,0 +1,156 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <title>Admin Dashboard - JNV</title>
+  <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.5.0/css/all.min.css">
+  <link rel="stylesheet" href="css/admin.css">
+</head>
+<body>
+  <div class="dashboard">
+    <!-- Sidebar -->
+    <aside class="sidebar">
+      <div class="sidebar-head">
+        <h2>JNV Panel</h2>
+        <p id="sidebarUser">Admin</p>
+      </div>
+      <ul class="sidebar-nav">
+        <li><a class="active" data-panel="overview"><i class="fas fa-chart-pie"></i> Overview</a></li>
+        <li><a data-panel="gallery"><i class="fas fa-images"></i> Gallery</a></li>
+        <li><a data-panel="testimonials"><i class="fas fa-quote-right"></i> Testimonials</a></li>
+        <li><a data-panel="notices"><i class="fas fa-bullhorn"></i> Notices</a></li>
+        <li><a data-panel="messages"><i class="fas fa-envelope"></i> Messages</a></li>
+        <li><a data-panel="settings"><i class="fas fa-cog"></i> Settings</a></li>
+        <li><a class="logout-link" id="sidebarLogout"><i class="fas fa-sign-out-alt"></i> Logout</a></li>
+      </ul>
+    </aside>
+
+    <!-- Main -->
+    <div class="main-area">
+      <header class="main-header">
+        <h1 id="pageTitle">Overview</h1>
+        <div class="header-right">
+          <span id="headerUser">admin</span>
+          <button class="logout-btn" id="headerLogout"><i class="fas fa-sign-out-alt"></i> Logout</button>
+        </div>
+      </header>
+
+      <div class="main-content">
+
+        <!-- OVERVIEW -->
+        <div class="panel active" id="panel-overview">
+          <div class="quick-actions">
+            <div class="qa-card" onclick="switchPanel('gallery')"><i class="fas fa-images"></i><h4>Gallery</h4><p>Manage photos</p></div>
+            <div class="qa-card" onclick="switchPanel('testimonials')"><i class="fas fa-quote-right"></i><h4>Testimonials</h4><p>Manage reviews</p></div>
+            <div class="qa-card" onclick="switchPanel('notices')"><i class="fas fa-bullhorn"></i><h4>Notices</h4><p>Post updates</p></div>
+            <div class="qa-card" onclick="switchPanel('messages')"><i class="fas fa-envelope"></i><h4>Messages</h4><p>View inquiries</p></div>
+          </div>
+          <div class="stats-cards" id="statsCards">
+            <div class="stat-card"><div class="stat-icon si-blue"><i class="fas fa-images"></i></div><div class="stat-info"><div class="stat-num" id="statGallery">0</div><div class="stat-lbl">Gallery Items</div></div></div>
+            <div class="stat-card"><div class="stat-icon si-green"><i class="fas fa-quote-right"></i></div><div class="stat-info"><div class="stat-num" id="statTestimonials">0</div><div class="stat-lbl">Testimonials</div></div></div>
+            <div class="stat-card"><div class="stat-icon si-yellow"><i class="fas fa-bullhorn"></i></div><div class="stat-info"><div class="stat-num" id="statNotices">0</div><div class="stat-lbl">Notices</div></div></div>
+            <div class="stat-card"><div class="stat-icon si-red"><i class="fas fa-envelope"></i></div><div class="stat-info"><div class="stat-num" id="statMessages">0</div><div class="stat-lbl">Messages</div></div></div>
+          </div>
+        </div>
+
+        <!-- GALLERY MANAGER -->
+        <div class="panel" id="panel-gallery">
+          <div class="panel-head">
+            <h2>Gallery Manager</h2>
+            <div class="panel-actions">
+              <button class="btn btn-primary" onclick="openGalleryModal()"><i class="fas fa-plus"></i> Add Photo</button>
+            </div>
+          </div>
+          <div class="table-wrap">
+            <table>
+              <thead><tr><th>Image</th><th>Title</th><th>Category</th><th>Actions</th></tr></thead>
+              <tbody id="galleryTableBody"></tbody>
+            </table>
+          </div>
+        </div>
+
+        <!-- TESTIMONIALS MANAGER -->
+        <div class="panel" id="panel-testimonials">
+          <div class="panel-head">
+            <h2>Testimonials Manager</h2>
+            <div class="panel-actions">
+              <button class="btn btn-primary" onclick="openTestiModal()"><i class="fas fa-plus"></i> Add Testimonial</button>
+            </div>
+          </div>
+          <div class="table-wrap">
+            <table>
+              <thead><tr><th>Name</th><th>Role</th><th>Text</th><th>Actions</th></tr></thead>
+              <tbody id="testiTableBody"></tbody>
+            </table>
+          </div>
+        </div>
+
+        <!-- NOTICES MANAGER -->
+        <div class="panel" id="panel-notices">
+          <div class="panel-head">
+            <h2>Notices & Announcements</h2>
+            <div class="panel-actions">
+              <button class="btn btn-primary" onclick="openNoticeModal()"><i class="fas fa-plus"></i> Add Notice</button>
+            </div>
+          </div>
+          <div class="table-wrap">
+            <table>
+              <thead><tr><th>Title</th><th>Date</th><th>Status</th><th>Actions</th></tr></thead>
+              <tbody id="noticeTableBody"></tbody>
+            </table>
+          </div>
+        </div>
+
+        <!-- MESSAGES -->
+        <div class="panel" id="panel-messages">
+          <div class="panel-head">
+            <h2>Contact Messages</h2>
+            <div class="panel-actions">
+              <button class="btn btn-outline" onclick="refreshMessages()"><i class="fas fa-sync"></i> Refresh</button>
+            </div>
+          </div>
+          <div class="table-wrap">
+            <table>
+              <thead><tr><th>Name</th><th>Email</th><th>Subject</th><th>Message</th><th>Date</th><th>Actions</th></tr></thead>
+              <tbody id="messageTableBody"></tbody>
+            </table>
+          </div>
+        </div>
+
+        <!-- SETTINGS -->
+        <div class="panel" id="panel-settings">
+          <div class="panel-head">
+            <h2>Settings</h2>
+          </div>
+          <div class="table-wrap" style="padding:24px;">
+            <div class="form-group">
+              <label>Current Username</label>
+              <input type="text" id="settingsUser" value="admin" style="width:100%;max-width:300px;">
+            </div>
+            <div class="form-group">
+              <label>New Password</label>
+              <input type="password" id="settingsPass" placeholder="Leave blank to keep current" style="width:100%;max-width:300px;">
+            </div>
+            <button class="btn btn-primary" onclick="saveSettings()"><i class="fas fa-save"></i> Save Changes</button>
+          </div>
+        </div>
+
+      </div>
+    </div>
+  </div>
+
+  <!-- Modal Overlay -->
+  <div class="modal-overlay" id="modalOverlay">
+    <div class="modal-box">
+      <h3 id="modalTitle">Add New</h3>
+      <div id="modalBody"></div>
+      <div class="modal-actions"></div>
+    </div>
+  </div>
+
+  <div class="toast-container" id="toastContainer"></div>
+
+  <script src="js/admin.js"></script>
+</body>
+</html>
