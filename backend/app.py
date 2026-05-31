@@ -121,11 +121,19 @@ def api_upload(user):
 def serve_upload(filename):
     return send_from_directory(app.config['UPLOAD_FOLDER'], filename)
 
+@app.route('/health')
+def health():
+    return jsonify({'status': 'ok', 'cwd': os.getcwd(), 'root': PROJECT_ROOT})
+
 # ─── SERVE FRONTEND ──────────────────────────────────────────
 
 @app.route('/')
 def serve_index():
-    return send_from_directory(PROJECT_ROOT, 'index.html')
+    try:
+        return send_from_directory(PROJECT_ROOT, 'index.html')
+    except Exception as e:
+        print(f"serve_index error: {e}", file=sys.stderr)
+        return jsonify({'error': str(e)}), 500
 
 @app.route('/admin/')
 @app.route('/admin')
