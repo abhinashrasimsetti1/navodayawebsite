@@ -1,4 +1,4 @@
-import os, uuid, mimetypes
+import os, uuid, mimetypes, sys
 from datetime import datetime
 from flask import Flask, request, jsonify, send_from_directory
 from werkzeug.security import generate_password_hash, check_password_hash
@@ -7,15 +7,18 @@ from database import get_db, init_db
 
 app = Flask(__name__, static_folder=None)
 
-# Project root (parent of backend/)
-PROJECT_ROOT = os.path.dirname(os.path.dirname(__file__))
+# Project root
+PROJECT_ROOT = os.getcwd()
 
 UPLOAD_FOLDER = os.path.join(PROJECT_ROOT, 'assets', 'uploads')
 os.makedirs(UPLOAD_FOLDER, exist_ok=True)
 app.config['UPLOAD_FOLDER'] = UPLOAD_FOLDER
 app.config['MAX_CONTENT_LENGTH'] = 16 * 1024 * 1024
 
-init_db()
+try:
+    init_db()
+except Exception as e:
+    print("DB init error:", e, file=sys.stderr)
 
 # ─── AUTH HELPERS ───────────────────────────────────────────
 
