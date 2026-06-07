@@ -189,21 +189,7 @@ document.addEventListener('DOMContentLoaded', function() {
       btn.innerHTML = 'Sending... <i class="fas fa-spinner fa-spin"></i>';
       btn.disabled = true;
 
-      var inputs = this.querySelectorAll('input, textarea');
-      var msg = { id: Date.now().toString(36) + Math.random().toString(36).substr(2,4), date: new Date().toLocaleDateString() };
-      if (inputs[0]) msg.name = inputs[0].value;
-      if (inputs[1]) msg.email = inputs[1].value;
-      if (inputs[2]) msg.subject = inputs[2].value;
-      if (inputs[3]) msg.message = inputs[3].value;
-
       setTimeout(function() {
-        try {
-          fetch(API_BASE + '/messages', {
-            method: 'POST',
-            headers: { 'Content-Type': 'application/json' },
-            body: JSON.stringify(msg)
-          }).catch(function() {});
-        } catch(e) {}
         alert('Thank you! We will get back to you shortly.');
         contactForm.reset();
         btn.innerHTML = orig;
@@ -238,115 +224,8 @@ document.addEventListener('DOMContentLoaded', function() {
     obs.observe(card);
   });
 
-  // ---- DYNAMIC CONTENT FROM API ----
-  var API_BASE = (function() {
-    if (window.location.hostname === 'localhost' || window.location.hostname === '127.0.0.1') {
-      return 'http://localhost:5000/api';
-    }
-    return window.location.origin + '/api';
-  })();
-
-  function apiAvailable() {
-    return fetch(API_BASE + '/gallery', { method: 'HEAD' }).then(function() { return true; }).catch(function() { return false; });
-  }
-
-  function loadGallery() {
-    fetch(API_BASE + '/gallery').then(function(r) { return r.json(); }).then(function(items) {
-      if (!items || !items.length) return;
-      var grid = document.getElementById('galleryGrid');
-      if (!grid) return;
-      grid.innerHTML = '';
-      var cats = { campus: 'Campus', facilities: 'Facilities', events: 'Events' };
-      items.forEach(function(item) {
-        var div = document.createElement('div');
-        div.className = 'g-item';
-        var cat = item.category || 'campus';
-        div.setAttribute('data-category', cat);
-        // Determine image path
-        var imgPath;
-        if (item.file && item.file.indexOf('.') > -1) {
-          imgPath = 'assets/uploads/' + item.file;
-        } else {
-          imgPath = (item.file || 'library') + '.jpg';
-        }
-        div.setAttribute('data-img', imgPath);
-        var catLabel = cats[cat] || cat;
-        div.innerHTML = '<div class="g-bg"><i class="fas fa-image"></i></div><div class="g-thumb" style="background-image:url(' + imgPath + ');background-size:cover;background-position:center;"></div><div class="g-overlay"><span>' + item.title + '</span></div>';
-        grid.appendChild(div);
-      });
-      // Rebind gallery click events
-      var newItems = document.querySelectorAll('.g-item');
-      galleryItems = newItems;
-      newItems.forEach(function(item, i) {
-        item.addEventListener('click', function() {
-          document.querySelectorAll('.g-item').forEach(function(g) { g.style.display = 'block'; });
-          document.querySelectorAll('.gallery-filter button').forEach(function(b) { b.classList.remove('active'); });
-          var allBtn = document.querySelector('.gallery-filter button[data-filter="all"]');
-          if (allBtn) allBtn.classList.add('active');
-          var visible = Array.from(document.querySelectorAll('.g-item'));
-          var idx = visible.indexOf(item);
-          openLightbox(idx);
-        });
-      });
-    }).catch(function() {});
-  }
-
-  function loadTestimonials() {
-    fetch(API_BASE + '/testimonials').then(function(r) { return r.json(); }).then(function(items) {
-      if (!items || !items.length) return;
-      var track = document.getElementById('testiTrack');
-      if (!track) return;
-      track.innerHTML = '';
-      items.forEach(function(item) {
-        var initial = (item.name || '?').charAt(0).toUpperCase();
-        var card = document.createElement('div');
-        card.className = 'testi-float-card';
-        card.innerHTML =
-          '<div class="tfc-icon">' + initial + '</div>' +
-          '<div class="tfc-text"><p>"' + item.text + '"</p><strong>' + item.name + '</strong><span>' + (item.role || '') + '</span></div>';
-        track.appendChild(card);
-      });
-      var clone = track.innerHTML;
-      track.innerHTML = track.innerHTML + clone;
-    }).catch(function() {});
-  }
-
-  function loadNotices() {
-    fetch(API_BASE + '/notices').then(function(r) { return r.json(); }).then(function(items) {
-      if (!items || !items.length) return;
-      var active = items.filter(function(n) { return n.status === 'active'; });
-      if (!active.length) return;
-      // Header bar (only create once)
-      if (header && !document.getElementById('noticeBar')) {
-        var bar = document.createElement('div');
-        bar.id = 'noticeBar';
-        bar.style.cssText = 'background:var(--primary-500);color:var(--white);text-align:center;padding:6px 16px;font-size:0.78rem;font-weight:500;position:relative;z-index:999;';
-        bar.innerHTML = '<i class="fas fa-bullhorn" style="margin-right:8px;"></i> ' +
-          active.map(function(n) { return n.title + (n.date ? ' (' + n.date + ')' : ''); }).join(' &nbsp;·&nbsp; ');
-        header.parentNode.insertBefore(bar, header);
-      }
-      // Notices section
-      var section = document.getElementById('notices');
-      var list = document.getElementById('noticesList');
-      if (section && list) {
-        section.style.display = '';
-        list.innerHTML = active.map(function(n) {
-          return '<div class="notice-item"><div class="notice-date">' + (n.date || '') + '</div><div class="notice-content"><h4>' + n.title + '</h4></div></div>';
-        }).join('');
-      }
-    }).catch(function() {});
-  }
-
-  setTimeout(function() {
-    apiAvailable().then(function(available) {
-      if (available) {
-        loadGallery(); loadTestimonials(); loadNotices();
-        // Auto-refresh every 15 seconds (silent update)
-        setInterval(function() {
-          loadGallery(); loadTestimonials(); loadNotices();
-        }, 15000);
-      }
-    });
-  }, 500);
-
 });
+
+// Note: This is a static site. The contact form shows a success message
+// but does not send data anywhere. To receive actual submissions, sign up
+// at https://formspree.io and replace the form action in index.html.
