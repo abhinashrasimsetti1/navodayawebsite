@@ -1,8 +1,0 @@
-<svg xmlns="http://www.w3.org/2000/svg" width="600" height="400" viewBox="0 0 600 400">
-  <rect width="600" height="400" fill="#6366f1" opacity="0.05"/>
-  <rect x="80" y="60" width="440" height="280" rx="10" fill="#6366f1" opacity="0.1"/>
-  <rect x="200" y="200" width="80" height="80" fill="#6366f1" opacity="0.2"/>
-  <rect x="300" y="150" width="80" height="130" fill="#6366f1" opacity="0.15"/>
-  <polygon points="180,200 260,140 340,200" fill="none" stroke="#6366f1" stroke-width="2" opacity="0.3"/>
-  <text x="300" y="370" text-anchor="middle" fill="#64748b" font-size="16" font-family="Arial">Civil Engineering</text>
-</svg>
